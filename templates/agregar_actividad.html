@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agregar actividad</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <h1>Agregar nueva actividad</h1>
+  <form id="actividadForm" method="POST" enctype="multipart/form-data">
+    <label for="region">Región:</label>
+    <select id="region" required></select>
+    <label for="comuna">Comuna:</label>
+    <select name="comuna" id="comuna" required></select>
+    <label for="sector">Sector:</label>
+    <input type="text" name="sector" id="sector" maxlength="100" />
+    <label for="nombre">Nombre de la actividad:</label>
+    <input type="text" name="nombre" id="nombre" required maxlength="200" />
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required maxlength="100" />
+    <label for="celular">Celular:</label>
+    <input type="text" name="celular" id="celular" maxlength="15" />
+    <label for="inicio">Fecha y hora de inicio:</label>
+    <input type="datetime-local" name="inicio" id="inicio" required />
+    <label for="termino">Fecha y hora de término:</label>
+    <input type="datetime-local" name="termino" id="termino" />
+    <label for="descripcion">Descripción:</label>
+    <textarea name="descripcion" id="descripcion" maxlength="500"></textarea>
+
+    <label for="tema">Tema(s):</label>
+<select name="tema" id="tema" multiple required>
+  <option value="musica">Música</option>
+  <option value="deporte">Deporte</option>
+  <option value="ciencias">Ciencias</option>
+  <option value="religion">Religión</option>
+  <option value="politica">Política</option>
+  <option value="tecnologia">Tecnología</option>
+  <option value="juegos">Juegos</option>
+  <option value="baile">Baile</option>
+  <option value="comida">Comida</option>
+  <option value="otro">Otro</option>
+</select>
+    <input type="text" name="tema_otro" id="tema_otro" style="display:none" placeholder="Especifica otro tema" maxlength="15" />
+
+    <label for="contactar_medio">Formas de contacto:</label>
+    <select name="contactar_medio" id="contactar_medio" multiple required>
+      <option value="whatsapp">Whatsapp</option>
+      <option value="telegram">Telegram</option>
+      <option value="X">X (Twitter)</option>
+      <option value="instagram">Instagram</option>
+      <option value="tiktok">TikTok</option>
+      <option value="otra">Otra</option>
+    </select>
+    <div id="ids-contacto"></div>
+
+    <label>Fotos (máx 5):</label>
+    <div id="fotosContainer">
+      <input type="file" name="fotos" accept="image/*" />
+    </div>
+    <button type="button" id="agregarFoto">+ Añadir otra foto</button>
+    <br><br>
+    <button type="button" id="agregarActividad">Agregar actividad</button>
+  </form>
+
+  <div id="confirmacion" style="display:none">
+    <p>¿Confirmas que deseas enviar esta actividad?</p>
+    <button id="confirmar">Sí, enviar</button>
+    <button id="cancelar">No, volver</button>
+  </div>
+  <br><br>
+  <a href="{{ url_for('portada') }}">
+    <button type="button">Volver a portada</button>
+  </a>
+
+  <script src="{{ url_for('static', filename='js/formulario.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/region-comuna.js') }}"></script>
+</body>
+</html>

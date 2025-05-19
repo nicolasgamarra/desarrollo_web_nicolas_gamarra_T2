@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estadísticas</title>
+
+    {# CSS global #}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}"/>
+
+    {#  ➜ Si más adelante sirves los gráficos con Chart.js / Plotly,
+        elimina estas <img> y pon un <canvas>. Por ahora dejamos
+        “place-holders” estáticos.  #}
+</head>
+<body>
+<div class="main-container">
+    <h1>Estadísticas de Actividades</h1>
+
+    <section>
+        <h2>Gráficos</h2>
+        <p>A continuación se muestran datos relacionados con las actividades:</p>
+
+        <img src="{{ url_for('static', filename='img/picture1_t1web.png') }}"
+             alt="Gráfico por región"   width="500">
+
+        <img src="{{ url_for('static', filename='img/picture2_t1web.png') }}"
+             alt="Gráfico por tema"     width="500">
+
+        <img src="{{ url_for('static', filename='img/picture3_t1web.png') }}"
+             alt="Gráfico por mes"      width="500">
+    </section>
+
+    <br>
+    <a href="{{ url_for('portada') }}">Volver a la portada</a>
+</div>
+</body>
+</html>

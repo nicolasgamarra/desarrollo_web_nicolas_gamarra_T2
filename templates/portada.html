@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Portada</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Bienvenido a la Plataforma de Actividades</h1>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('actividad_nueva') }}">Agregar actividad</a></li>
+            <li><a href="{{ url_for('actividades_lista') }}">Ver listado de actividades</a></li>
+            <li><a href="{{ url_for('estadisticas') }}">Estadísticas</a></li>
+        </ul>
+    </nav>
+
+    <section>
+        <h2>Últimas 5 actividades</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Inicio</th>
+                    <th>Término</th>
+                    <th>Comuna</th>
+                    <th>Sector</th>
+                    <th>Tema(s)</th>
+                    <th>Foto</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for act in actividades %}
+                <tr onclick="window.location='{{ url_for('actividad_detalle', act_id=act.id) }}'">
+                    <td>{{ act.dia_hora_inicio.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ act.dia_hora_termino.strftime('%Y-%m-%d %H:%M') if act.dia_hora_termino else '—' }}</td>
+                    <td>{{ act.comuna.nombre }}</td>
+                    <td>{{ act.sector or '—' }}</td>
+                    <td>{{ act.temas | map(attribute='tema') | join(', ') }}</td>
+
+                    <td>
+                        {% if act.fotos %}
+                            <img src="{{ url_for('static',
+                                                 filename='uploads/' ~ act.fotos[0].ruta_archivo) }}"
+                                 width="100"
+                                 alt="Foto de {{ (act.temas | first).tema }} en {{ act.comuna.nombre }}">
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

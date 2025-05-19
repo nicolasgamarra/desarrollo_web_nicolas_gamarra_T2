@@ -1,0 +1,87 @@
+{# ------------------------------------------------------------------ #}
+{#  Plantilla Jinja 2                                                #}
+{#  Espera recibir un objeto `act` (instancia de models.Actividad)   #}
+{# ------------------------------------------------------------------ #}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Actividad</title>
+
+    {# CSS global #}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}"/>
+
+    <style>
+        .foto-miniatura   { width:320px;height:240px;cursor:pointer;margin:10px 0; }
+        #modal            { display:none;position:fixed;z-index:999;inset:0;
+                            background:rgba(0,0,0,.7); }
+        #modal-content    { position:absolute;top:50%;left:50%;
+                            transform:translate(-50%,-50%);
+                            background:#fff;padding:10px;border-radius:8px; }
+        #modal-content img{ width:800px;height:600px; }
+        #cerrar-modal     { margin-top:10px;padding:5px 10px;background:#c00;
+                            color:#fff;border:0;border-radius:4px;cursor:pointer; }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <h1>Detalle de Actividad</h1>
+
+    <p><strong>Inicio:       </strong> {{ act.dia_hora_inicio }}</p>
+    <p><strong>Término:      </strong> {{ act.dia_hora_termino or '—' }}</p>
+    <p><strong>Región:       </strong> {{ act.comuna.region.nombre }}</p>
+    <p><strong>Comuna:       </strong> {{ act.comuna.nombre }}</p>
+    <p><strong>Sector:       </strong> {{ act.sector or '—' }}</p>
+
+    <p><strong>Nombre Organizador:</strong> {{ act.nombre }}</p>
+    <p><strong>Email:                    </strong> {{ act.email }}</p>
+    <p><strong>Celular:                  </strong> {{ act.celular or '—' }}</p>
+
+    <p><strong>Contactar por:</strong>
+        {% if act.contactos %}
+            {{ act.contactos|map(attribute='nombre')|join(', ') }}
+        {% else %} — {% endif %}
+    </p>
+
+    <p><strong>Descripción: </strong> {{ act.descripcion or '—' }}</p>
+
+    <p><strong>Tema:</strong>
+        {{ act.temas|map(attribute='tema')|join(', ') }}
+    </p>
+
+    <h3>Fotos</h3>
+
+    {% for foto in act.fotos %}
+        <img src="{{ url_for('static', filename='uploads/' + foto.nombre_archivo) }}"
+             class="foto-miniatura"
+             alt="Foto {{ loop.index }}"
+             onclick="mostrarFoto(this.src)">
+    {% endfor %}
+
+    <br><br>
+    <a href="{{ url_for('actividades_lista') }}">Volver al listado</a> |
+    <a href="{{ url_for('portada') }}">Volver a la portada</a>
+</div>
+
+{# ---------- Modal ----------- #}
+<div id="modal">
+    <div id="modal-content">
+        <img id="foto-grande" src="" alt="Foto grande">
+        <br>
+        <button id="cerrar-modal" onclick="cerrarModal()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+function mostrarFoto(src){
+    document.getElementById('foto-grande').src = src;
+    document.getElementById('modal').style.display = 'block';
+}
+function cerrarModal(){
+    document.getElementById('modal').style.display = 'none';
+}
+</script>
+</body>
+</html>

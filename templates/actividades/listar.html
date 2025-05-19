@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Actividades</title>
+
+    <!-- hoja de estilos global -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}"/>
+
+    <style>
+        /* 👉 puedes mover esto a css/styles.css si prefieres */
+        tr:hover         { background:#f0f0f0; cursor:pointer; }
+        .tabla-actividades,
+        .tabla-actividades th,
+        .tabla-actividades td {
+            border:1px solid #ccc;
+            border-collapse:collapse;
+            padding:8px;
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+
+    <h1>Listado de Actividades</h1>
+    <p>Haz clic sobre una actividad para ver más detalles.</p>
+
+    <table class="tabla-actividades">
+        <thead>
+        <tr>
+            <th>Inicio</th>
+            <th>Término</th>
+            <th>Comuna</th>
+            <th>Sector</th>
+            <th>Tema(s)</th>
+            <th>Organizador</th>
+            <th>Total&nbsp;Fotos</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {# ▸ “actividades” llega desde app.py #}
+        {% for act in actividades %}
+            <tr onclick="window.location='{{ url_for('actividad_detalle',
+                                                     act_id=act.id) }}'">
+                <td>{{ act.dia_hora_inicio.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    {{ act.dia_hora_termino.strftime('%Y-%m-%d %H:%M')
+                       if act.dia_hora_termino else '—' }}
+                </td>
+                <td>{{ act.comuna.nombre }}</td>
+                <td>{{ act.sector or '—' }}</td>
+
+                {# ---------- TEMAS (sin comprensiones) ---------- #}
+                {% set temas = [] %}
+                {% for t in act.temas %}
+                    {% if t.tema != 'otro' %}
+                        {% set _ = temas.append(t.tema) %}
+                    {% else %}
+                        {% set _ = temas.append(t.glosa_otro) %}
+                    {% endif %}
+                {% endfor %}
+                <td>{{ temas | join(', ') }}</td>
+
+                <td>{{ act.nombre }}</td>
+                <td>{{ act.fotos|length }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="7" style="text-align:center">
+                No hay actividades registradas aún.
+            </td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- paginación simple -->
+    <div style="margin-top:1rem">
+        {% if actividades.has_prev %}
+            <a href="{{ url_for('actividades_lista',
+                                page=actividades.prev_num) }}">← Anterior</a>
+        {% endif %}
+        Página {{ actividades.page }} / {{ actividades.pages }}
+        {% if actividades.has_next %}
+            <a href="{{ url_for('actividades_lista',
+                                page=actividades.next_num) }}">Siguiente →</a>
+        {% endif %}
+    </div>
+
+    <br>
+    <a href="{{ url_for('portada') }}">Volver a la portada</a>
+</div>
+</body>
+</html>
