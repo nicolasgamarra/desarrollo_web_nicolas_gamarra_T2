@@ -3,44 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <title>Agregar actividad</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
+
+  <style>
+    #val-box {
+      background-color: #ffe0e0;
+      border: 1px solid #cc0000;
+      padding: 10px;
+      margin: 15px 0;
+      border-radius: 5px;
+    }
+    #val-box h2 {
+      margin-top: 0;
+      color: #cc0000;
+    }
+  </style>
 </head>
 <body>
   <h1>Agregar nueva actividad</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="val-box">
+        <h2>Errores en el formulario</h2>
+        <ul id="val-list">
+          {% for category, message in messages %}
+            {% if category == 'error' %}
+              <li>{{ message }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endwith %}
+
   <form id="actividadForm" method="POST" enctype="multipart/form-data">
     <label for="region">Región:</label>
-    <select id="region" required></select>
+    <select id="region" required>
+      <option value="" disabled selected>Selecciona región</option>
+    </select>
+
     <label for="comuna">Comuna:</label>
-    <select name="comuna" id="comuna" required></select>
+    <select name="comuna" id="comuna" required>
+      <option value="" disabled selected>Selecciona comuna</option>
+    </select>
+
     <label for="sector">Sector:</label>
-    <input type="text" name="sector" id="sector" maxlength="100" />
+    <input type="text" name="sector" id="sector" maxlength="100">
+
     <label for="nombre">Nombre de la actividad:</label>
-    <input type="text" name="nombre" id="nombre" required maxlength="200" />
+    <input type="text" name="nombre" id="nombre" required maxlength="200">
+
     <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required maxlength="100" />
+    <input type="email" name="email" id="email" required maxlength="100">
+
     <label for="celular">Celular:</label>
-    <input type="text" name="celular" id="celular" maxlength="15" />
+    <input type="text" name="celular" id="celular" maxlength="15">
+
     <label for="inicio">Fecha y hora de inicio:</label>
-    <input type="datetime-local" name="inicio" id="inicio" required />
+    <input type="datetime-local" name="inicio" id="inicio" required>
+
     <label for="termino">Fecha y hora de término:</label>
-    <input type="datetime-local" name="termino" id="termino" />
+    <input type="datetime-local" name="termino" id="termino">
+
     <label for="descripcion">Descripción:</label>
     <textarea name="descripcion" id="descripcion" maxlength="500"></textarea>
 
     <label for="tema">Tema(s):</label>
-<select name="tema" id="tema" multiple required>
-  <option value="musica">Música</option>
-  <option value="deporte">Deporte</option>
-  <option value="ciencias">Ciencias</option>
-  <option value="religion">Religión</option>
-  <option value="politica">Política</option>
-  <option value="tecnologia">Tecnología</option>
-  <option value="juegos">Juegos</option>
-  <option value="baile">Baile</option>
-  <option value="comida">Comida</option>
-  <option value="otro">Otro</option>
-</select>
-    <input type="text" name="tema_otro" id="tema_otro" style="display:none" placeholder="Especifica otro tema" maxlength="15" />
+    <select name="tema" id="tema" multiple required>
+      <option value="musica">Música</option>
+      <option value="deporte">Deporte</option>
+      <option value="ciencias">Ciencias</option>
+      <option value="religion">Religión</option>
+      <option value="politica">Política</option>
+      <option value="tecnologia">Tecnología</option>
+      <option value="juegos">Juegos</option>
+      <option value="baile">Baile</option>
+      <option value="comida">Comida</option>
+      <option value="otro">Otro</option>
+    </select>
+    <input type="text" name="tema_otro" id="tema_otro" style="display:none" placeholder="Especifica otro tema" maxlength="15">
 
     <label for="contactar_medio">Formas de contacto:</label>
     <select name="contactar_medio" id="contactar_medio" multiple required>
@@ -55,10 +97,11 @@
 
     <label>Fotos (máx 5):</label>
     <div id="fotosContainer">
-      <input type="file" name="fotos" accept="image/*" />
+      <input type="file" name="fotos" accept="image/*">
     </div>
     <button type="button" id="agregarFoto">+ Añadir otra foto</button>
     <br><br>
+
     <button type="button" id="agregarActividad">Agregar actividad</button>
   </form>
 
@@ -68,11 +111,11 @@
     <button id="cancelar">No, volver</button>
   </div>
   <br><br>
-  <a href="{{ url_for('portada') }}">
-    <button type="button">Volver a portada</button>
-  </a>
+
+  <button type="button" onclick="window.location='{{ url_for('portada') }}'">Volver a portada</button>
 
   <script src="{{ url_for('static', filename='js/formulario.js') }}"></script>
   <script src="{{ url_for('static', filename='js/region-comuna.js') }}"></script>
 </body>
 </html>
+

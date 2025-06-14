@@ -1,37 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Estadísticas</title>
-
-    {# CSS global #}
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/styles.css') }}"/>
-
-    {#  ➜ Si más adelante sirves los gráficos con Chart.js / Plotly,
-        elimina estas <img> y pon un <canvas>. Por ahora dejamos
-        “place-holders” estáticos.  #}
+  <meta charset="UTF-8">
+  <title>Estadísticas</title>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
 </head>
 <body>
-<div class="main-container">
-    <h1>Estadísticas de Actividades</h1>
+  <h1>Estadísticas</h1>
 
-    <section>
-        <h2>Gráficos</h2>
-        <p>A continuación se muestran datos relacionados con las actividades:</p>
+  <h2>Actividades por Día</h2>
+  <div id="grafico-lineas" style="width:80%; height:400px;"></div>
 
-        <img src="{{ url_for('static', filename='img/picture1_t1web.png') }}"
-             alt="Gráfico por región"   width="500">
+  <h2>Actividades por Tipo</h2>
+  <div id="grafico-torta" style="width:80%; height:400px;"></div>
 
-        <img src="{{ url_for('static', filename='img/picture2_t1web.png') }}"
-             alt="Gráfico por tema"     width="500">
+  <h2>Actividades por Mes y Franja Horaria</h2>
+  <div id="grafico-barras" style="width:80%; height:400px;"></div>
 
-        <img src="{{ url_for('static', filename='img/picture3_t1web.png') }}"
-             alt="Gráfico por mes"      width="500">
-    </section>
+  <br><br>
+  <a href="{{ url_for('portada') }}">Volver a la portada</a>
 
-    <br>
-    <a href="{{ url_for('portada') }}">Volver a la portada</a>
-</div>
+  <script>
+    // Grafico lienas a partir de la paginas que recomendaron
+    fetch("/api/estadisticas/actividades_por_dia")
+      .then(res => res.json())
+      .then(data => {
+        Highcharts.chart('grafico-lineas', {
+          chart: { type: 'line' },
+          title: { text: 'Actividades por Día' },
+          xAxis: {
+            categories: data.map(d => d.fecha),
+            title: { text: 'Fecha' }
+          },
+          yAxis: {
+            title: { text: 'Cantidad' },
+            allowDecimals: false
+          },
+          series: [{
+            name: 'Actividades',
+            data: data.map(d => d.cantidad)
+          }]
+        });
+      });
+
+    // grafico de rotar a partir de las paginas que comentaron
+    fetch("/api/estadisticas/actividades_por_tema")
+      .then(res => res.json())
+      .then(data => {
+        Highcharts.chart('grafico-torta', {
+          chart: { type: 'pie' },
+          title: { text: 'Distribución por Tipo de Actividad' },
+          series: [{
+            name: 'Cantidad',
+            colorByPoint: true,
+            data: data.map(d => ({ name: d.tema, y: d.cantidad }))
+          }]
+        });
+      });
+
+    // grafico de barra a partir de las paginas que comentaron en el enunciado y comento el auxiliar.
+    fetch("/api/estadisticas/actividades_por_horario_mes")
+      .then(res => res.json())
+      .then(data => {
+        Highcharts.chart('grafico-barras', {
+          chart: { type: 'column' },
+          title: { text: 'Actividades por Mes y Franja Horaria' },
+          xAxis: {
+            categories: data.meses,
+            title: { text: 'Mes' }
+          },
+          yAxis: {
+            min: 0,
+            title: { text: 'Cantidad de Actividades' },
+            allowDecimals: false
+          },
+          series: data.series
+        });
+      });
+  </script>
 </body>
 </html>
+

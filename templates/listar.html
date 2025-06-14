@@ -42,8 +42,8 @@
         <tbody>
         {# ▸ “actividades” llega desde app.py #}
         {% for act in actividades %}
-            <tr onclick="window.location='{{ url_for('actividad_detalle',
-                                                     act_id=act.id) }}'">
+            <tr onclick="window.location='{{ url_for('actividad_detalle', actividad_id=act.id) }}'">
+
                 <td>{{ act.dia_hora_inicio.strftime('%Y-%m-%d %H:%M') }}</td>
                 <td>
                     {{ act.dia_hora_termino.strftime('%Y-%m-%d %H:%M')
@@ -73,8 +73,6 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <!-- paginación simple -->
     <div style="margin-top:1rem">
         {% if actividades.has_prev %}
             <a href="{{ url_for('actividades_lista',
@@ -82,8 +80,8 @@
         {% endif %}
         Página {{ actividades.page }} / {{ actividades.pages }}
         {% if actividades.has_next %}
-            <a href="{{ url_for('actividades_lista',
-                                page=actividades.next_num) }}">Siguiente →</a>
+            <a href="{{ url_for('actividades_lista', 
+            page=actividades.next_num) }}">Siguiente →</a>
         {% endif %}
     </div>
 
@@ -92,3 +90,4 @@
 </div>
 </body>
 </html>
+

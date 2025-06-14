@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Actividad</title>
+
+    <!-- CSS global -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
+
+    <style>
+        .foto-miniatura   { width:320px;height:240px;cursor:pointer;margin:10px 0; }
+        #modal            { display:none;position:fixed;z-index:999;inset:0;
+                            background:rgba(0,0,0,.7); }
+        #modal-content    { position:absolute;top:50%;left:50%;
+                            transform:translate(-50%,-50%);
+                            background:#fff;padding:10px;border-radius:8px; }
+        #modal-content img{ width:800px;height:600px; }
+        #cerrar-modal     { margin-top:10px;padding:5px 10px;background:#c00;
+                            color:#fff;border:0;border-radius:4px;cursor:pointer; }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <h1>Detalle de Actividad</h1>
+
+    <p><strong>Inicio:</strong> {{ actividad.dia_hora_inicio }}</p>
+    <p><strong>Término:</strong> {{ actividad.dia_hora_termino or '—' }}</p>
+    <p><strong>Región:</strong> {{ actividad.comuna.region.nombre }}</p>
+    <p><strong>Comuna:</strong> {{ actividad.comuna.nombre }}</p>
+    <p><strong>Sector:</strong> {{ actividad.sector or '—' }}</p>
+    <p><strong>Nombre Organizador:</strong> {{ actividad.nombre }}</p>
+    <p><strong>Email:</strong> {{ actividad.email }}</p>
+    <p><strong>Celular:</strong> {{ actividad.celular or '—' }}</p>
+
+    <p><strong>Contactar por:</strong>
+        {% if actividad.contactos %}
+            {{ actividad.contactos|map(attribute='nombre')|join(', ') }}
+        {% else %} — {% endif %}
+    </p>
+
+    <p><strong>Descripción:</strong> {{ actividad.descripcion or '—' }}</p>
+
+    <p><strong>Tema:</strong>
+        {{ actividad.temas|map(attribute='tema')|join(', ') }}
+    </p>
+
+    <h3>Fotos</h3>
+    {% for foto in actividad.fotos %}
+        <img src="{{ url_for('static', filename='uploads/' + foto.nombre_archivo) }}"
+             class="foto-miniatura"
+             alt="Foto {{ loop.index }}"
+             onclick="mostrarFoto(this.src)">
+    {% endfor %}
+
+    <h3>Comentarios</h3>
+    <ul id="lista-comentarios">
+        {% for comentario in actividad.comentarios %}
+        <li>
+            <strong>{{ comentario.nombre }}</strong> ({{ comentario.fecha.strftime('%Y-%m-%d %H:%M') }}):<br>
+            {{ comentario.texto }}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h4>Agregar Comentario</h4>
+    <form id="form-comentario">
+        <input type="hidden" name="actividad_id" value="{{ actividad.id }}">
+        <label for="nombre">Tu nombre:</label><br>
+        <input type="text" name="nombre" id="nombre" required><br>
+        <label for="texto">Comentario:</label><br>
+        <textarea name="texto" id="texto" required></textarea><br>
+        <button type="submit">Enviar Comentario</button>
+    </form>
+
+    <br><br>
+    <a href="{{ url_for('actividades_lista') }}">Volver al listado</a> |
+    <a href="{{ url_for('portada') }}">Volver a la portada</a>
+</div>
+
+<div id="modal">
+    <div id="modal-content">
+        <img id="foto-grande" src="" alt="Foto grande">
+        <br>
+        <button id="cerrar-modal" onclick="cerrarModal()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+    const ACTIVIDAD_ID = {{ actividad.id }};
+</script>
+<script src="{{ url_for('static', filename='js/comentarios.js') }}"></script>
+
+</body>
+</html>
+
